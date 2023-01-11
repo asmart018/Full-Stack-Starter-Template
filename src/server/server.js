@@ -4,6 +4,7 @@ import cors from "cors";
 import apiRouter from "./routes";
 import config from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
+import { join } from "path";
 
 const app = express();
 
@@ -38,7 +39,7 @@ app.use("/api", apiRouter);
  */
 app.use((req, res, next) => {
   try {
-    res.sendFile(join(__dirname, "../client/build/index.html"));
+    res.sendFile(join(__dirname, "../client/public/index.html"));
   } catch (error) {
     next(error);
   }
@@ -53,6 +54,9 @@ app.use(errorHandler);
  * Bind the app to a specified port
  * You can access your app at http://localhost:<port>
  */
-app.listen(config.port || 8080, () =>
-  console.log(`Server listening on port ${config.port}...`)
-);
+
+let port = config.port;
+if (!config.port) {
+  port = 8080;
+}
+app.listen(port, () => console.log(`Server listening on port ${port}...`));
